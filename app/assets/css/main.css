@@ -1,0 +1,43 @@
+/* 全域基礎樣式 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  background: #1a1510;
+  color: #e8dcc4;
+  min-height: 100vh;
+}
+
+#__nuxt {
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* 仿古竹簡風配色變數 */
+:root {
+  --bg-dark: #1a1510;
+  --bg-mid: #2a2018;
+  --bg-light: #3a2d20;
+  --ink: #e8dcc4;
+  --ink-dim: #a89a7e;
+  --gold: #d4af37;
+  --red-seal: #b73229;
+  --jade: #4a7c59;
+
+  /* 勢力色 */
+  --faction-wei: #3a5a9a;
+  --faction-shu: #4a7c3a;
+  --faction-wu: #b73229;
+  --faction-qun: #7a7a7a;
+}

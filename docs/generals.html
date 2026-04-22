@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三國大戰：州郡爭霸 — 武將列表（200 AD）</title>
+<style>
+  :root {
+    --bg: #1a1510;
+    --bg-mid: #2a2018;
+    --bg-light: #3a2d20;
+    --ink: #e8dcc4;
+    --ink-dim: #a89a7e;
+    --gold: #d4af37;
+    --cao: #3a5a9a;
+    --liu: #4a7c3a;
+    --sun: #b73229;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    line-height: 1.6;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    text-align: center;
+    padding-bottom: 30px;
+    border-bottom: 2px solid var(--bg-light);
+    margin-bottom: 30px;
+  }
+  h1 {
+    color: var(--gold);
+    font-size: 36px;
+    margin: 0;
+    letter-spacing: 6px;
+  }
+  .subtitle {
+    color: var(--ink-dim);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .intro {
+    background: var(--bg-mid);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    border-left: 4px solid var(--gold);
+  }
+  .intro h3 { margin: 0 0 10px 0; color: var(--gold); }
+  .intro ul { margin: 8px 0; padding-left: 22px; }
+
+  .faction {
+    margin-bottom: 40px;
+    background: var(--bg-mid);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--bg-light);
+  }
+  .faction-header {
+    padding: 16px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faction.cao .faction-header { background: var(--cao); }
+  .faction.liu .faction-header { background: var(--liu); }
+  .faction.sun .faction-header { background: var(--sun); }
+  .faction-header .meta {
+    font-weight: normal;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--bg-light);
+  }
+  th {
+    background: var(--bg-light);
+    color: var(--gold);
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  tbody tr:hover { background: rgba(212, 175, 55, 0.06); }
+  tbody tr.lord td { background: rgba(212, 175, 55, 0.12); font-weight: bold; }
+  tbody tr.lord td:first-child::before {
+    content: "★ ";
+    color: var(--gold);
+  }
+  .name-col { width: 90px; font-size: 15px; }
+  .stat-col { width: 110px; }
+  .notes-col { color: var(--ink-dim); font-size: 13px; }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar-num {
+    width: 30px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: bold;
+  }
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .bar-fill.wu   { background: linear-gradient(90deg, #c44, #f66); }
+  .bar-fill.zhi  { background: linear-gradient(90deg, #4a7, #6c9); }
+  .bar-fill.zheng{ background: linear-gradient(90deg, #47c, #69d); }
+  .bar-fill.loyal{ background: linear-gradient(90deg, #c84, #eb6); }
+
+  .summary {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--bg-mid);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .summary h3 { color: var(--gold); margin-top: 0; }
+
+  @media print {
+    body { background: white; color: black; }
+    .faction { break-inside: avoid; border: 1px solid #ccc; }
+    .intro, .summary { background: #f5f5f5; color: black; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>武 將 列 表</h1>
+    <div class="subtitle">三國大戰：州郡爭霸　—　200 AD・官渡之際</div>
+  </header>
+
+  <section class="intro">
+    <h3>屬性說明</h3>
+    <ul>
+      <li><strong>武力</strong>：戰鬥時駐守/攻擊方的每月傷害係數。</li>
+      <li><strong>智力</strong>：駐守郡的徵兵倍率（智力愈高，每月兵力成長愈快）。</li>
+      <li><strong>政治</strong>：駐守郡的軍糧產出倍率。</li>
+      <li><strong>忠誠</strong>：被俘招降的難度（忠誠愈高愈難招降，&lt;50 時機率大增）。君主自身忠誠固定 100。</li>
+    </ul>
+    <p style="margin:10px 0 0 0; color:var(--ink-dim);">共 28 位武將。君主陣亡則該勢力淘汰、領地化為中立空郡。</p>
+  </section>
+
+  <!-- 曹操 -->
+  <section class="faction cao">
+    <div class="faction-header">
+      <span>曹操陣營</span>
+      <span class="meta">首都：潁川（許昌）・起始領地 1 郡・12 位武將</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="name-col">姓名</th>
+          <th class="stat-col">武力</th>
+          <th class="stat-col">智力</th>
+          <th class="stat-col">政治</th>
+          <th class="stat-col">忠誠</th>
+          <th class="notes-col">備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="lord"><td>曹操</td>  <td>#WU72</td><td>#ZHI91</td><td>#ZHENG88</td><td>#LOYAL100</td><td>君主・亂世梟雄</td></tr>
+        <tr><td>荀彧</td>              <td>#WU45</td><td>#ZHI95</td><td>#ZHENG93</td><td>#LOYAL95</td> <td>王佐之才、內政首選</td></tr>
+        <tr><td>荀攸</td>              <td>#WU55</td><td>#ZHI92</td><td>#ZHENG85</td><td>#LOYAL92</td> <td>軍師・智謀深沉</td></tr>
+        <tr><td>郭嘉</td>              <td>#WU41</td><td>#ZHI96</td><td>#ZHENG75</td><td>#LOYAL95</td> <td>鬼才・奇謀百出</td></tr>
+        <tr><td>程昱</td>              <td>#WU58</td><td>#ZHI85</td><td>#ZHENG78</td><td>#LOYAL88</td> <td>智勇兼備</td></tr>
+        <tr><td>賈詡</td>              <td>#WU42</td><td>#ZHI95</td><td>#ZHENG74</td><td>#LOYAL70</td> <td>多次換主、善自保</td></tr>
+        <tr><td>夏侯惇</td>            <td>#WU90</td><td>#ZHI58</td><td>#ZHENG70</td><td>#LOYAL100</td><td>宗族・盲夏侯</td></tr>
+        <tr><td>夏侯淵</td>            <td>#WU88</td><td>#ZHI70</td><td>#ZHENG61</td><td>#LOYAL100</td><td>宗族・快速迂迴</td></tr>
+        <tr><td>曹仁</td>              <td>#WU85</td><td>#ZHI80</td><td>#ZHENG72</td><td>#LOYAL100</td><td>族弟・守城名將</td></tr>
+        <tr><td>許褚</td>              <td>#WU91</td><td>#ZHI37</td><td>#ZHENG28</td><td>#LOYAL99</td> <td>虎痴・貼身護衛</td></tr>
+        <tr><td>張遼</td>              <td>#WU94</td><td>#ZHI81</td><td>#ZHENG67</td><td>#LOYAL75</td> <td>200 年白門樓降曹</td></tr>
+        <tr><td>于禁</td>              <td>#WU80</td><td>#ZHI71</td><td>#ZHENG62</td><td>#LOYAL85</td> <td>五子良將・治軍嚴</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 劉備 -->
+  <section class="faction liu">
+    <div class="faction-header">
+      <span>劉備陣營</span>
+      <span class="meta">首都：沛國（小沛）・起始領地 1 郡・7 位武將</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="name-col">姓名</th>
+          <th class="stat-col">武力</th>
+          <th class="stat-col">智力</th>
+          <th class="stat-col">政治</th>
+          <th class="stat-col">忠誠</th>
+          <th class="notes-col">備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="lord"><td>劉備</td>  <td>#WU77</td><td>#ZHI75</td><td>#ZHENG85</td><td>#LOYAL100</td><td>君主・仁德之主</td></tr>
+        <tr><td>關羽</td>               <td>#WU97</td><td>#ZHI75</td><td>#ZHENG60</td><td>#LOYAL100</td><td>武聖・義薄雲天</td></tr>
+        <tr><td>張飛</td>               <td>#WU98</td><td>#ZHI55</td><td>#ZHENG30</td><td>#LOYAL100</td><td>燕人張翼德・最高武力</td></tr>
+        <tr><td>趙雲</td>               <td>#WU96</td><td>#ZHI76</td><td>#ZHENG65</td><td>#LOYAL100</td><td>常山趙子龍・文武兼備</td></tr>
+        <tr><td>簡雍</td>               <td>#WU28</td><td>#ZHI72</td><td>#ZHENG78</td><td>#LOYAL95</td> <td>舊識・使節</td></tr>
+        <tr><td>孫乾</td>               <td>#WU31</td><td>#ZHI70</td><td>#ZHENG75</td><td>#LOYAL92</td> <td>從事・善外交</td></tr>
+        <tr><td>糜竺</td>               <td>#WU22</td><td>#ZHI65</td><td>#ZHENG89</td><td>#LOYAL98</td> <td>東海豪商・散盡家財助劉備</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 孫權 -->
+  <section class="faction sun">
+    <div class="faction-header">
+      <span>孫權陣營</span>
+      <span class="meta">首都：吳郡・起始領地 1 郡・9 位武將</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="name-col">姓名</th>
+          <th class="stat-col">武力</th>
+          <th class="stat-col">智力</th>
+          <th class="stat-col">政治</th>
+          <th class="stat-col">忠誠</th>
+          <th class="notes-col">備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="lord"><td>孫權</td>  <td>#WU67</td><td>#ZHI82</td><td>#ZHENG83</td><td>#LOYAL100</td><td>君主・承父兄之業</td></tr>
+        <tr><td>周瑜</td>               <td>#WU82</td><td>#ZHI96</td><td>#ZHENG76</td><td>#LOYAL98</td> <td>大都督・孫策託孤</td></tr>
+        <tr><td>張昭</td>               <td>#WU40</td><td>#ZHI86</td><td>#ZHENG93</td><td>#LOYAL95</td> <td>文臣領袖</td></tr>
+        <tr><td>程普</td>               <td>#WU83</td><td>#ZHI72</td><td>#ZHENG75</td><td>#LOYAL96</td> <td>三朝元老</td></tr>
+        <tr><td>黃蓋</td>               <td>#WU82</td><td>#ZHI70</td><td>#ZHENG68</td><td>#LOYAL94</td> <td>老將・苦肉計</td></tr>
+        <tr><td>韓當</td>               <td>#WU81</td><td>#ZHI58</td><td>#ZHENG62</td><td>#LOYAL90</td> <td>老將</td></tr>
+        <tr><td>太史慈</td>             <td>#WU90</td><td>#ZHI66</td><td>#ZHENG55</td><td>#LOYAL90</td> <td>神射手・孫策知遇</td></tr>
+        <tr><td>周泰</td>               <td>#WU85</td><td>#ZHI45</td><td>#ZHENG45</td><td>#LOYAL95</td> <td>救主之將</td></tr>
+        <tr><td>呂蒙</td>               <td>#WU77</td><td>#ZHI78</td><td>#ZHENG71</td><td>#LOYAL92</td> <td>年輕潛力、後期將軍</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="summary">
+    <h3>總計</h3>
+    <ul>
+      <li>曹操陣營：12 位（文武均衡）</li>
+      <li>劉備陣營：7 位（精銳但人數少）</li>
+      <li>孫權陣營：9 位（水戰與江東老將）</li>
+      <li><strong>合計 28 位</strong></li>
+    </ul>
+    <p style="color:var(--ink-dim); margin-bottom:0;">
+      其他歷史勢力（袁紹、劉表、劉璋、馬騰、公孫度）本階段不作為 AI 登場，其原領地化為中立空郡供玩家爭奪。日後擴充可加入其麾下武將（如顏良、文醜、黃忠、魏延、馬超等）。
+    </p>
+  </section>
+</div>
+
+<script>
+  // 將 #WUxx / #ZHIxx / #ZHENGxx / #LOYALxx 佔位符替換為數值條
+  function makeBar(cls, value) {
+    return `<div class="bar"><span class="bar-num">${value}</span><div class="bar-track"><div class="bar-fill ${cls}" style="width:${value}%"></div></div></div>`;
+  }
+  document.querySelectorAll('td').forEach(td => {
+    const m = td.textContent.match(/^#(WU|ZHI|ZHENG|LOYAL)(\d+)$/);
+    if (!m) return;
+    const map = { WU: 'wu', ZHI: 'zhi', ZHENG: 'zheng', LOYAL: 'loyal' };
+    td.innerHTML = makeBar(map[m[1]], parseInt(m[2], 10));
+  });
+</script>
+</body>
+</html>
