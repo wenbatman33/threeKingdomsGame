@@ -1,75 +1,35 @@
-# Nuxt Minimal Starter
+# 三國志・州郡爭霸
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+state.io 風格 ・ 即時戰略 ・ 三家相爭
 
-## Setup
+**🎮 線上試玩：** https://wenbatman33.github.io/threeKingdomsGame/
 
-Make sure to install dependencies:
+## 玩法
+
+1. **按住自家郡**，拖曳到相鄰郡放開 → 派出一半兵力
+2. 攻方 > 守方兵力則占領，剩餘兵力進駐；否則消耗對方兵力
+3. 自家郡每 1.5 秒 +1 兵，至容量上限（普通 30、首都 50）
+4. 消滅其他兩家即為勝利
+
+## 三勢力
+
+- **曹操軍**（藍）起於潁川
+- **劉備軍**（綠）起於蜀郡
+- **孫權軍**（紅）起於吳郡
+
+地圖共 40 郡、13 州，還原東漢末年州郡分布。
+
+## 本機開發
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npm run dev    # http://localhost:3333
 ```
 
-## Development Server
+## 技術棧
 
-Start the development server on `http://localhost:3000`:
+Nuxt 4 (SPA) + Vue 3 + Pinia + SVG overlay + Playwright E2E
 
-```bash
-# npm
-npm run dev
+## 額外頁面
 
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- `/editor` — 座標編輯器（拖曳郡位置並存到 localStorage）

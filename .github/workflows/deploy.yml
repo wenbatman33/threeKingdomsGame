@@ -29,7 +29,8 @@ jobs:
           cache: npm
 
       - name: Install deps
-        run: npm ci
+        # 用 install 而非 ci，避開跨平台 optional native deps (rollup/esbuild) 導致的 lockfile mismatch
+        run: npm install --no-audit --no-fund
 
       - name: Generate static site
         env:
