@@ -3,6 +3,7 @@
  */
 import {
   AI_INTERVAL_MS,
+  BATTLE_RATE_PER_SEC,
   CAPACITY_CAPITAL,
   CAPACITY_NORMAL,
   CAPITAL_START,
@@ -44,18 +45,14 @@ export function createInitialState(playerFactionId: FactionId): GameState {
   }
 }
 
-/** 成長：已占領郡每 GROW_INTERVAL_MS 加 1 troop，至 capacity */
+/** 成長：已占領郡每 GROW_INTERVAL_MS 加 1 troop（無上限，可大量囤兵） */
 export function applyGrowth(state: GameState): void {
   const t = state.elapsedMs
   for (const c of Object.values(state.counties)) {
     if (c.ownerId === 'neutral') continue
-    while (c.nextGrowAt <= t && c.troops < c.capacity) {
+    while (c.nextGrowAt <= t) {
       c.troops += 1
       c.nextGrowAt += GROW_INTERVAL_MS
-    }
-    // 到上限後停擺
-    if (c.troops >= c.capacity && c.nextGrowAt < t) {
-      c.nextGrowAt = t + GROW_INTERVAL_MS
     }
   }
 }
@@ -85,39 +82,79 @@ export function sendHalf(
     progress: 0,
     speed: WAVE_SPEED_PER_MS,
   }
+  wave.phase = 'moving'
   state.waves.push(wave)
   return true
 }
 
-/** 推進 waves；抵達者觸發戰鬥/增援 */
+/** 推進 waves；抵達自家郡 → 即時增援；抵達敵/中立郡 → 進入 fighting */
 export function advanceWaves(state: GameState, dt: number): void {
-  const arrived: Wave[] = []
+  const reinforced: number[] = [] // 已完成增援要移除的 wave id
   for (const w of state.waves) {
+    if (w.phase === 'fighting') continue // fighting 的 wave 停在目標，不再前進
     w.progress += w.speed * dt
-    if (w.progress >= 1) arrived.push(w)
+    if (w.progress >= 1) {
+      w.progress = 1
+      const to = state.counties[w.toId]
+      if (!to) {
+        reinforced.push(w.id)
+        continue
+      }
+      if (to.ownerId === w.ownerId) {
+        // 自家 → 即時增援（無上限）
+        to.troops = to.troops + w.troops
+        reinforced.push(w.id)
+      } else {
+        // 敵 / 中立 → 停在邊緣，進入交戰
+        w.phase = 'fighting'
+        w.fightBuffer = 0
+      }
+    }
   }
-  state.waves = state.waves.filter((w) => w.progress < 1)
-  for (const w of arrived) resolveArrival(state, w)
+  if (reinforced.length > 0) {
+    const s = new Set(reinforced)
+    state.waves = state.waves.filter((w) => !s.has(w.id))
+  }
+  processBattles(state, dt)
 }
 
-function resolveArrival(state: GameState, w: Wave): void {
-  const to = state.counties[w.toId]
-  if (!to) return
-  if (to.ownerId === w.ownerId) {
-    // 增援（容量上限）
-    to.troops = Math.min(to.capacity, to.troops + w.troops)
-    return
+/** 交戰：fighting 的 wave 與目標郡守軍互相 -1 兵，直到一邊歸 0 */
+function processBattles(state: GameState, dt: number): void {
+  const RATE_PER_MS = BATTLE_RATE_PER_SEC / 1000
+  const toRemove: number[] = []
+  for (const w of state.waves) {
+    if (w.phase !== 'fighting') continue
+    const to = state.counties[w.toId]
+    if (!to) {
+      toRemove.push(w.id)
+      continue
+    }
+    // 交戰途中若目標變自家（例如別的 wave 先占了）→ 併入
+    if (to.ownerId === w.ownerId) {
+      to.troops = to.troops + w.troops
+      toRemove.push(w.id)
+      continue
+    }
+    w.fightBuffer = (w.fightBuffer ?? 0) + dt * RATE_PER_MS
+    while (w.fightBuffer >= 1 && w.troops > 0 && to.troops > 0) {
+      w.fightBuffer -= 1
+      w.troops -= 1
+      to.troops -= 1
+    }
+    if (to.troops <= 0 && w.troops > 0) {
+      // 占領：剩餘攻方兵力進駐（無上限）
+      to.ownerId = w.ownerId
+      to.troops = w.troops
+      to.nextGrowAt = state.elapsedMs + GROW_INTERVAL_MS
+      toRemove.push(w.id)
+    } else if (w.troops <= 0) {
+      // 攻方潰敗
+      toRemove.push(w.id)
+    }
   }
-  // 敵 or 中立 — 戰鬥
-  const diff = w.troops - to.troops
-  if (diff > 0) {
-    // 占領
-    to.ownerId = w.ownerId
-    to.troops = Math.min(to.capacity, diff)
-    to.nextGrowAt = state.elapsedMs + GROW_INTERVAL_MS
-  } else {
-    // 攻方潰敗
-    to.troops = Math.max(0, to.troops - w.troops)
+  if (toRemove.length > 0) {
+    const s = new Set(toRemove)
+    state.waves = state.waves.filter((w) => !s.has(w.id))
   }
 }
 
@@ -166,9 +203,10 @@ export function runAI(state: GameState): void {
 }
 
 function aiOneMove(state: GameState, factionId: FactionId): void {
-  // 找所有自家郡且有 > 50% 容量的兵力
+  // 無容量上限後改用絕對門檻：兵力 ≥ 12 才會考慮派兵（保留守軍）
+  const AI_MIN_TROOPS_TO_SEND = 12
   const owned = Object.values(state.counties).filter(
-    (c) => c.ownerId === factionId && c.troops >= Math.max(MIN_SEND * 2, c.capacity * 0.4),
+    (c) => c.ownerId === factionId && c.troops >= Math.max(MIN_SEND * 2, AI_MIN_TROOPS_TO_SEND),
   )
   if (owned.length === 0) return
   // 隨機打亂後嘗試每個

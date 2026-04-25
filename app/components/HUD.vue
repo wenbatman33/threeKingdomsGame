@@ -49,11 +49,16 @@ import { useBgm } from '~/composables/useBgm'
 
 const store = useGameStore()
 const bgm = useBgm()
+
+// 遊戲時間：公元 184 年 1 月起（黃巾之亂），每 1 秒 = 1 個月
+const START_YEAR = 184
+const MS_PER_MONTH = 1000
 const elapsedLabel = computed(() => {
   const ms = store.state?.elapsedMs ?? 0
-  const s = Math.floor(ms / 1000)
-  const m = Math.floor(s / 60)
-  return `${m}:${String(s % 60).padStart(2, '0')}`
+  const totalMonths = Math.floor(ms / MS_PER_MONTH)
+  const year = START_YEAR + Math.floor(totalMonths / 12)
+  const month = (totalMonths % 12) + 1
+  return `公元 ${year} 年 ${month} 月`
 })
 
 function onVol(e: Event) {
@@ -80,10 +85,11 @@ function onVol(e: Event) {
 }
 .time {
   color: #d4af37;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   font-variant-numeric: tabular-nums;
-  min-width: 60px;
+  letter-spacing: 1px;
+  min-width: 160px;
 }
 .btn {
   background: #2a2018;

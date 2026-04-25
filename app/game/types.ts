@@ -12,11 +12,13 @@ export interface StateMeta {
   name: string
 }
 
-/** 靜態郡資料（座標為圖像 0..1 比例） */
+/** 靜態郡資料（座標為 Han bbox 內的 0..1 比例） */
 export interface CountyDef {
   id: string
   name: string
   stateId: string
+  /** 對應 STATE_PATHS 中的州代碼（14 州模型：1 遊戲單位 = 1 州 path 群） */
+  provinceId: string
   xPct: number
   yPct: number
   /** 相鄰郡 id（雙向） */
@@ -46,6 +48,10 @@ export interface Wave {
   progress: number
   /** 每毫秒進度增量 */
   speed: number
+  /** 階段：行軍中 → 抵達敵方後進入交戰 */
+  phase?: 'moving' | 'fighting'
+  /** 交戰小數累積（滿 1 扣 1 兵） */
+  fightBuffer?: number
 }
 
 /** 勢力靜態資料 */
